@@ -1,0 +1,9 @@
+name: penguin
+description: A sample Polymer application
+dependencies:
+    polymer: any
+    json_object: any
+    unittest: any
+transformers:
+- polymer:
+    entry_points: web/penguin.html
