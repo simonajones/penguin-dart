@@ -17,7 +17,7 @@ part 'data/memory.dart';
  */
 
 final HOST = '127.0.0.1'; // eg: localhost
-final PORT = 4040;        // a port, must match the client program
+final PORT = 4040; // a port, must match the client program
 
 PenguinStore myPenguin = new PenguinStore();
 
@@ -27,25 +27,21 @@ void start() {
 
 void gotMessage(_server) {
   _server.listen((HttpRequest request) {
-    try {
-      switch (request.method) {
-        case 'GET':
-          handleGet(request);
-          break;
-        case 'POST':
-          handlePost(request);
-          break;
-        case 'OPTIONS':
-          handleOptions(request);
-          break;
-        default: defaultHandler(request);
-      }
-    } catch (exception, stacktrace) {
-      print("Error: " + exception);
-      print(stacktrace);
+    print("${request.method}: "+request.uri.path);
+    switch (request.method) {
+      case 'GET':
+        handleGet(request);
+        break;
+      case 'POST':
+        handlePost(request);
+        break;
+      case 'OPTIONS':
+        handleOptions(request);
+        break;
+      default:
+        defaultHandler(request);
     }
-  },
-  onError: printError); // .listen failed
+  }, onError: printError); // .listen failed
   print('Penguin Listening for GET and POST on http://$HOST:$PORT');
 }
 
@@ -63,9 +59,9 @@ void handleGet(HttpRequest req) {
       var answer = myPenguin.findQueuesAsJson();
       res.write(answer);
       break;
-    default: defaultHandler(req);
+    default:
+      defaultHandler(req);
   }
-
   res.close();
 }
 
@@ -80,26 +76,39 @@ void handlePost(HttpRequest req) {
   var postMap = null;
 
   req.listen((List<int> buffer) {
-    postMap = decodePostData(buffer);
+    try {
+      postMap = decodePostData(buffer);
 
-    switch (req.uri.path) {
+      switch (req.uri.path) {
 
-      case '/queue/create':
-        var createQueue = myPenguin.createQueue(postMap["name"]);
-        res.write(createQueue.toJson());
-        break;
+        case '/queue/create':
+            var createQueue = myPenguin.createQueue(postMap["name"]);
+            res.write(createQueue.toJson());
+          break;
 
-      case '/queue/addstory':
-        var createStory = myPenguin.createStory(
-            int.parse(postMap['qid']), postMap['ref'], postMap['title'], postMap['author']);
-        res.write(createStory.toJson());
-        break;
+        case '/queue/addstory':
+            var createStory = myPenguin.createStory(int.parse(postMap['qid']),
+                postMap['ref'], postMap['title'], postMap['author']);
+            res.write(createStory.toJson());
+          break;
 
-      default: defaultHandler(req);
+        default:
+          defaultHandler(req);
+      }
+      res.close();
+    } catch (exception, stacktrace) {
+      writeError(res, exception, stacktrace);
+    } finally {
+      res.close();
     }
-    res.close();
-  },
-  onError: printError);
+  }, onError: printError);
+}
+
+writeError(HttpResponse res, exception, stacktrace) {
+  res.statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
+  res.writeln("There was an error processing the request. " + exception.toString());
+  res.writeln(stacktrace.toString());
+  printError(stacktrace);
 }
 
 /*
@@ -128,8 +137,9 @@ Map<String, String> decodePostData(List<int> buffer) {
  */
 void addCorsHeaders(HttpResponse res) {
   res.headers.add('Access-Control-Allow-Origin', '*, ');
-  res.headers.add('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.headers.add('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+  res.headers.add('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.headers.add('Access-Control-Allow-Headers',
+      'Origin, X-Requested-With, Content-Type, Accept');
 }
 
 void handleOptions(HttpRequest req) {

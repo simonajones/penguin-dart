@@ -1,0 +1,21 @@
+<polymer-element name="queue-list">
+  <template>
+    <div id="queue-list">
+
+        <div>
+          <label>Queues</label>
+        </div>
+
+        <button on-click="{{refresh}}">Refresh</button>
+        <ul>
+          <template repeat="{{queue in queues}}">
+            <li>{{queue}}</li>
+          </template>
+        </ul>
+
+        <span>(result: {{result}})</span>
+    </div>
+  </template>
+  <script type="application/dart" src="queue-list.dart"></script>
+</polymer-element>
+

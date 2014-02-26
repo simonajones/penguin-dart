@@ -1,0 +1,27 @@
+<polymer-element name="queue-create" extends="form">
+  <template>
+    <!-- style>
+      div {
+        font-size: 14pt;
+        text-align: left;
+        margin-top: 140px;
+      }
+      button {
+        font-size: 14pt;
+        margin-bottom: 20px;
+      }
+    </style -->
+    <div id="queuecreateform">
+
+        <div class="entry">
+          <label>New Queue name:</label>
+          <input type="text" value="{{name}}">
+        </div>
+
+      <button on-click="{{createQueue}}">Create</button><br>
+      <span>result: {{result}}</span>
+    </div>
+  </template>
+  <script type="application/dart" src="queue-create.dart"></script>
+</polymer-element>
+

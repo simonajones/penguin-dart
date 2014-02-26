@@ -2,22 +2,23 @@
 
 import 'dart:html';
 import 'package:polymer/polymer.dart';
+import 'dart:convert';
+//import 'package:penguin/server.dart';
 
 /**
  * A Polymer element to create Penguin Queues
  */
-@CustomTag('create-queue')
-class CreateQueue extends FormElement with Polymer, Observable {
+@CustomTag('queue-list')
+class QueueList extends PolymerElement with Polymer, Observable {
 
-  @published String name = null;
-  @published String result = null;
+  @published var queues = null;
+  @published var result = null;
 
-  CreateQueue.created() : super.created() {
-  }
+  QueueList.created() : super.created() {}
 
-  HttpRequest request;
+  HttpRequest request = null;
 
-  void createQueue(Event e, var detail, Node target) {
+  void refresh(Event e, var detail, Node target) {
     e.preventDefault(); // Don't do the default submit.
 
     request = new HttpRequest();
@@ -25,16 +26,17 @@ class CreateQueue extends FormElement with Polymer, Observable {
     request.onReadyStateChange.listen(onData);
 
     // POST the data to the server.
-    var url = 'http://127.0.0.1:4040';
-    request.open('POST', url);
-    request.send("name="+name);
+    var url = 'http://127.0.0.1:4040/queues';
+    request.open('GET', url, async: false);
+    request.send();
   }
 
   void onData(_) {
     if (request.readyState == HttpRequest.DONE &&
         request.status == 200) {
       // Data saved OK.
-      result = 'Server Sez: ' + request.responseText;
+      queues = JSON.decode(request.responseText);
+      result = "Done";
     } else if (request.readyState == HttpRequest.DONE &&
         request.status == 0) {
       // Status is 0...most likely the server isn't running.
@@ -43,4 +45,3 @@ class CreateQueue extends FormElement with Polymer, Observable {
   }
 
 }
-
