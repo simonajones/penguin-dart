@@ -3,7 +3,7 @@
  */
 
 import 'package:unittest/unittest.dart';
-import 'package:penguin/server.dart';
+import 'package:penguin/model/model.dart';
 
 main() {
   test('Encode Queue as JSON with no stories', () {
@@ -32,6 +32,19 @@ main() {
     expect(queue.id, equals(1));
     expect(queue.name, equals("queue one"));
     expect(queue.stories, equals([]));
+   });
+
+  test('Create List of Queues from JSON with Stories', () {
+    List<Queue> queues = Queue.listFromJson(
+        '[{"id":1,"name":"queue one","stories":[{"ref":"sref","title":"stitle","author":"sauthor","merged":false,"id":null}]}'+
+        ',{"id":2,"name":"queue two","stories":[]}]');
+    expect(queues[0].id, equals(1));
+    expect(queues[0].name, equals("queue one"));
+    // TODO: Matcher error? expect(queues[0].stories, equals([new Story("sref", "stitle", "sauthor")]));
+    // TODO: Matcher error? expect(queues[0].stories, contains(new Story("sref", "stitle", "sauthor")));
+    expect(queues[1].id, equals(2));
+    expect(queues[1].name, equals("queue two"));
+    expect(queues[1].stories, equals([]));
    });
 
   test('Create Story from JSON', () {

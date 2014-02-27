@@ -2,8 +2,7 @@
 
 import 'dart:html';
 import 'package:polymer/polymer.dart';
-import 'dart:convert';
-//import 'package:penguin/server.dart';
+import 'package:penguin/model/model.dart';
 
 /**
  * A Polymer element to create Penguin Queues
@@ -11,7 +10,7 @@ import 'dart:convert';
 @CustomTag('queue-list')
 class QueueList extends PolymerElement with Polymer, Observable {
 
-  @published var queues = null;
+  @published List<Queue> queues = null;
   @published var result = null;
 
   QueueList.created() : super.created() {}
@@ -34,8 +33,9 @@ class QueueList extends PolymerElement with Polymer, Observable {
   void onData(_) {
     if (request.readyState == HttpRequest.DONE &&
         request.status == 200) {
-      // Data saved OK.
-      queues = JSON.decode(request.responseText);
+      // Data loaded OK.
+      String data = request.responseText;
+      queues = Queue.listFromJson(data);
       result = "Done";
     } else if (request.readyState == HttpRequest.DONE &&
         request.status == 0) {

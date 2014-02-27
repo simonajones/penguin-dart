@@ -4,10 +4,9 @@
 library penguin;
 
 import 'dart:io';
-import 'dart:convert' show HTML_ESCAPE, JSON, LineSplitter, UTF8;
+import 'package:penguin/model/model.dart';
+import 'dart:convert';
 
-part 'model/queue.dart';
-part 'model/story.dart';
 part 'data/memory.dart';
 
 /* A simple server stolen from Chris Buckett's JSON web-service article

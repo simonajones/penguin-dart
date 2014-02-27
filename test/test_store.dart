@@ -3,6 +3,7 @@
  */
 
 import 'package:unittest/unittest.dart';
+import 'package:penguin/model/model.dart';
 import 'package:penguin/server.dart';
 
 main() {

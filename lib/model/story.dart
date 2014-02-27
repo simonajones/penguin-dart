@@ -2,7 +2,7 @@
 // My first dart class
 //
 
-part of penguin;
+part of penguinmodel;
 
 class Story {
 
@@ -23,6 +23,12 @@ class Story {
     _author = decoded["author"];
   }
 
+  Story.fromMap(Map<String, Object> storyMap) {
+    _reference = storyMap["ref"];
+    _title = storyMap["title"];
+    _author = storyMap["author"];
+  }
+
   // Can't get JSON encoder to navigate List<Story> correclty from a Queue, so
   // I use Maps.
   Map toMap() {
@@ -39,4 +45,18 @@ class Story {
   String get title => _title;
   String get author => _author;
   bool get merged => _merged;
+
+  String toString() {
+    return "Story: ${_id} ref:${_reference} title:${_title} author:${author} isMerged:${_merged}";
+  }
+
+  static List<Story> listFromMap(List<Map<String, Object>> storyList) {
+    List<Story> answer = [];
+    for (var i in storyList) {
+      Story story = new Story.fromMap(i);
+      answer.add(story);
+    }
+    return answer;
+  }
+
 }
