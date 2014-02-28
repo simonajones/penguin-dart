@@ -26,7 +26,7 @@ class QueueCreate extends FormElement with Polymer, Observable {
 
     // POST the data to the server.
     var url = 'http://127.0.0.1:4040/queue/create';
-    request.open('POST', url, async: false);
+    request.open('POST', url, async: true);
     request.send("name="+name);
   }
 

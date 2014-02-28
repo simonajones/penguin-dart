@@ -26,7 +26,7 @@ class QueueList extends PolymerElement with Polymer, Observable {
 
     // POST the data to the server.
     var url = 'http://127.0.0.1:4040/queues';
-    request.open('GET', url, async: false);
+    request.open('GET', url, async: true);
     request.send();
   }
 
