@@ -4,7 +4,7 @@
 
 part of penguinmodel;
 
-class Story extends Serialisable {
+class Story {
 
   int _id = null;
   String _reference = null;
@@ -15,13 +15,23 @@ class Story extends Serialisable {
   // Constructor
   Story(this._reference, this._title, this._author); // Empty constructor body, nice.
 
-  // Parse JSON to create a Story
-  Story.fromJson(String json) {
-    super.fromJson(json);
+  // JSON SUPPORT: Construct from a Json Map
+  Story.fromJson(Map<String, Object> aMap) {
+    _reference = aMap['ref'];
+    _title = aMap['title'];
+    _author = aMap['author'];
+    _merged = aMap['merged'];
   }
 
-  Story.fromMap(Map<String, Object> aMap) {
-    super.fromMap(aMap);
+  // JSON SUPPORT: encode as Json Map to support Lists and Maps
+  Map toJson() {
+    Map aMap = {};
+    aMap['id'] = _id;
+    aMap['ref'] = _reference;
+    aMap['title'] = _title;
+    aMap['author'] = _author;
+    aMap['merged'] = _merged;
+    return aMap;
   }
 
   // Getters & Setters
@@ -42,15 +52,6 @@ class Story extends Serialisable {
 
   String toString() {
     return "Story: ${id} ref:${_reference} title:${_title} author:${author} isMerged:${_merged}";
-  }
-
-  static List<Story> listFromMap(List<Map<String, Object>> storyList) {
-    List<Story> answer = [];
-    for (var i in storyList) {
-      Story story = new Story.fromMap(i);
-      answer.add(story);
-    }
-    return answer;
   }
 
 }

@@ -4,7 +4,7 @@
 
 part of penguinmodel;
 
-class Queue extends Serialisable {
+class Queue {
 
   int _id = null;
   String _name = null;
@@ -16,13 +16,24 @@ class Queue extends Serialisable {
     _name = name;
   }
 
-  // Parse JSON to create a queue
-  Queue.fromJson(String json) {
-    fromJson(json);
+  Queue.fromJson(Map aMap) {
+    _id = aMap['id'];
+    _name = aMap['name'];
+    aMap['stories'].forEach((Map<String, Object> aMap){
+      _stories.add(new Story.fromJson(aMap));
+    });
   }
 
-  Queue.fromMap(Map aMap) {
-    fromMap(aMap);
+  // JSON SUPPORT: encode as Json Map - Used to support Lists and Maps of queues.
+  Map toJson() {
+    Map aMap = {};
+    aMap['id'] = _id;
+    aMap['name'] = _name;
+    aMap['stories'] = [];
+    _stories.forEach((Story s){
+      aMap['stories'].add(s.toJson());
+    });
+    return aMap;
   }
 
   Queue addStory(Story story) {
@@ -42,11 +53,10 @@ class Queue extends Serialisable {
 
   String toString() => "Queue '${_name}' with ${_stories.length} stories";
 
-  static List<Queue> listFromJson(String queuesAsJson) {
-    List<Map<String, Object>> decoded = JSON.decode(queuesAsJson);
+  static List<Queue> listFromJson(List<Map<String, Object>> jsonList) {
     List<Queue> answer = [];
-    for (var i in decoded) {
-      Queue queue = new Queue.fromMap(i);
+    for (var i in jsonList) {
+      Queue queue = new Queue.fromJson(i);
       answer.add(queue);
     }
     return answer;

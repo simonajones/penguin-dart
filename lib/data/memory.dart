@@ -2,6 +2,7 @@
 // Provide a simple API for CRUD operations on Queues and Stories
 // in memory.
 //
+//
 part of penguin;
 
 class PenguinStore {
@@ -14,10 +15,8 @@ class PenguinStore {
     return _queues;
   }
 
-  // TODO: I should be able to correctly encode the List<Queue>
-  // but it ends up as json string.
   String findQueuesAsJson() {
-    return JSON.encode(Queue.listAsMap(_queues));
+    return JSON.encode(_queues);
   }
 
   Queue createQueue(String name) {
