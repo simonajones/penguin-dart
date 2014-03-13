@@ -4,7 +4,7 @@
 
 part of penguinmodel;
 
-class Queue {
+class Queue extends Serialisable {
 
   int _id = null;
   String _name = null;
@@ -16,18 +16,13 @@ class Queue {
     _name = name;
   }
 
-  Queue.fromMap(Map queue) {
-    _id = queue["id"];
-    _name = queue["name"];
-    _stories = Story.listFromMap(queue["stories"]);
-  }
-
   // Parse JSON to create a queue
   Queue.fromJson(String json) {
-    var decoded = JSON.decode(json);
-    _id = decoded["id"];
-    _name = decoded["name"];
-    _stories = Story.listFromMap(decoded["stories"]);
+    fromJson(json);
+  }
+
+  Queue.fromMap(Map aMap) {
+    fromMap(aMap);
   }
 
   Queue addStory(Story story) {
@@ -35,37 +30,17 @@ class Queue {
     return this;
   }
 
-  // TODO: There must be a better way to do this? The
-  // List<Story> gets encoded as a single Json string
-  // instead of an array of Story objects.
-  // I'd like this map to work: return {"id": _id, "name": _name, "stories": _stories}
-  Map toMap() {
-    Map queueAsMap = {"id": _id, "name": _name};
-    queueAsMap["stories"] = listAsMap(_stories);
-    return queueAsMap;
-  }
-
-  String toJson() {
-    return JSON.encode(toMap());
-  }
-
+  // Getters and Setters
   int get id => _id;
-  String get name => _name;
-  List<Story> get stories => _stories;
-  String toString() => "Queue '${_name}' with ${_stories.length} stories";
+  void set id(int id) {_id = id;}
 
-  //
-  // Some static helpers... Again, there must be a better way
-  // to convert List<Queue> (and it's List<Story> member) to and from JSON?
-  //
-  static List<Map<String, Object>> listAsMap(final List<Object> list) {
-    List<Map<String, Object>> listOfMaps = new List();
-    for (final Object o in list) {
-      Map<String, Object> anObject = o.toMap();
-      listOfMaps.add(anObject);
-    }
-    return listOfMaps;
-  }
+  String get name => _name;
+  void set name(String name) {_name = name;}
+
+  List<Story> get stories => _stories;
+  void set stories(List<Story> stories) {_stories = stories;}
+
+  String toString() => "Queue '${_name}' with ${_stories.length} stories";
 
   static List<Queue> listFromJson(String queuesAsJson) {
     List<Map<String, Object>> decoded = JSON.decode(queuesAsJson);
